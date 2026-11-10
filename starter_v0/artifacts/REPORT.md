@@ -6,7 +6,7 @@ Cập nhật 10/11/2026 (Asia/Saigon). Provider/model: OpenRouter / `openai/gpt-
 
 | Thành viên | MSSV | Phân công |
 |---|---|---|
-| HoangBaoNguyen — nhóm trưởng | 2A202603384 | Prompt, version log, bằng chứng và tích hợp |
+| Hoàng Bảo Nguyên — nhóm trưởng | 2A202603384 | Prompt, version log, bằng chứng và tích hợp |
 | Hoàng Minh Huy | 2A202603495 | Tools, tools.yaml, fallback và unit tests |
 | Nguyễn Huy Giang | 2A202603543 | Eval nhóm, UI, transcript và REPORT |
 
