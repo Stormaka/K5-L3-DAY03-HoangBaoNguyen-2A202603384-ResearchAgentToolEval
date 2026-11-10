@@ -1,7 +1,105 @@
 {
   "dataset_id": "day04_v2_research_group",
   "dataset_role": "group",
-  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp: 3 tool nhóm tự thêm (wiki/hn_search/now), carryover tham số mới (lang), thu hẹp nguồn sang Hacker News, clarify dạng choice, và boundary gửi Telegram trong ngữ cảnh multiturn.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_wiki_background_routing",
+      "phase": "B", "suite": "group",
+      "query": "Sam Altman là ai vậy? Cho mình đôi nét nền tảng.",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "wiki", "args": {}}]},
+      "metadata": {"skill": "routing_background_to_wiki", "difficulty": "medium", "what_it_tests": "Câu hỏi nền tảng/là-ai về một người nổi tiếng → tool mới wiki (không phải lookup news hay timeline)."}
+    },
+    {
+      "id": "G02_hn_search_routing",
+      "phase": "B", "suite": "group",
+      "query": "Cộng đồng tech trên Hacker News đang bàn gì về Rust?",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "hn_search", "args": {"query": "Rust"}}]},
+      "metadata": {"skill": "routing_hn_discussion", "difficulty": "medium", "what_it_tests": "Muốn góc nhìn cộng đồng tech (Hacker News) → tool mới hn_search, không dùng lookup hay social_search."}
+    },
+    {
+      "id": "G03_now_tool_routing",
+      "phase": "B", "suite": "group",
+      "query": "Hôm nay là ngày bao nhiêu, thứ mấy rồi?",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "now", "args": {}}]},
+      "metadata": {"skill": "routing_time_anchor", "difficulty": "medium", "what_it_tests": "Câu hỏi thời gian hiện tại → tool mới now (model không tự biết ngày thật, không được bịa hay gọi lookup)."}
+    },
+    {
+      "id": "G04_timeline_seven_karpathy",
+      "phase": "B", "suite": "group",
+      "query": "Cho mình 7 tweet mới nhất của Andrej Karpathy",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "timeline", "args": {"screenname": "karpathy", "limit": 7}}]},
+      "metadata": {"skill": "arg_nondefault_limit_handle_map", "difficulty": "medium", "what_it_tests": "Trích limit=7 không mặc định + map tên Andrej Karpathy → handle karpathy (không @, không dấu cách)."}
+    },
+    {
+      "id": "G05_out_of_scope_translation",
+      "phase": "B", "suite": "group",
+      "query": "Dịch giúp mình câu 'I love artificial intelligence' sang tiếng Pháp",
+      "failure_type": "out_of_scope",
+      "expect": {"no_tool": true, "behavior": "refuse_or_answer_directly"},
+      "metadata": {"skill": "out_of_scope_translation", "difficulty": "easy", "what_it_tests": "Yêu cầu dịch thuật ngoài phạm vi research → KHÔNG gọi tool nào, trả lời thẳng."}
+    },
+    {
+      "id": "G06_background_then_news_carryover",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "VinUni là trường gì vậy?"},
+        {"role": "user", "content": "Hôm nay có tin gì về VinUni không?"}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "VinUni", "topic": "news", "timeframe": "day"}}]},
+      "metadata": {"skill": "multiturn_switch_general_to_news", "difficulty": "hard", "what_it_tests": "Latest turn chuyển từ hỏi nền (wiki) sang tin tức hôm nay: lookup query=VinUni (không thêm 'news' vào query), topic=news, timeframe=day."}
+    },
+    {
+      "id": "G07_narrow_to_hackernews",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tìm tin về GPT-5 trên web giúp mình"},
+        {"role": "user", "content": "Web nhiều spam quá, chuyển sang Hacker News đi"},
+        {"role": "user", "content": "Vẫn chủ đề GPT-5 nhé"}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "hn_search", "args": {"query": "GPT-5"}}]},
+      "metadata": {"skill": "multiturn_switch_source_to_new_tool", "difficulty": "hard", "what_it_tests": "Latest turn yêu cầu nguồn Hacker News + giữ chủ đề → CHỈ gọi hn_search (tool mới), không gọi thêm lookup."}
+    },
+    {
+      "id": "G08_clarify_choice_then_fill",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tóm tắt tweet giúp mình với"},
+        {"role": "user", "content": "Hoặc của sama, hoặc của elonmusk"},
+        {"role": "user", "content": "sama nhé"}
+      ],
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "timeline", "args": {"screenname": "sama"}}]},
+      "metadata": {"skill": "multiturn_choice_resolution", "difficulty": "hard", "what_it_tests": "Sau khi được hỏi, user chọn 1 trong 2 handle ở latest turn → timeline screenname=sama, KHÔNG gọi cả hai tài khoản."}
+    },
+    {
+      "id": "G09_wiki_lang_carryover",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Định nghĩa 'transformer' trong machine learning giúp mình"},
+        {"role": "user", "content": "Sang Wikipedia tiếng Anh nhé"}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "wiki", "args": {"lang": "en"}}]},
+      "metadata": {"skill": "multiturn_carryover_lang_arg", "difficulty": "hard", "what_it_tests": "Carry chủ đề 'transformer' từ lượt 1 + áp lang=en của latest turn vào tool mới wiki (không rơi về mặc định vi)."}
+    },
+    {
+      "id": "G10_confirm_send_in_multiturn",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tổng hợp tin AI hôm nay thành bản tin ngắn giúp mình"},
+        {"role": "user", "content": "Được đấy, gửi lên Telegram nhé"}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+      "metadata": {"skill": "multiturn_confirm_before_send", "difficulty": "hard", "what_it_tests": "Dù user nói 'gửi nhé' trong ngữ cảnh, hành động ghi ngoài (send Telegram) vẫn phải clarify yes_no trước — KHÔNG gọi send trực tiếp."}
+    }
+  ]
 }

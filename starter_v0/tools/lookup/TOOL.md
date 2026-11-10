@@ -12,3 +12,7 @@ side_effect: false
 
 Searches the web via Tavily. Has a `topic` (`general` or `news`) and a
 `timeframe` argument.
+
+Keyless demo fallback: with `KEYLESS_FALLBACKS=1` and no `TAVILY_API_KEY`,
+`topic="news"` queries are served by Google News RSS (`fallback: google_news_rss`
+in the result); `topic="general"` still requires the key.

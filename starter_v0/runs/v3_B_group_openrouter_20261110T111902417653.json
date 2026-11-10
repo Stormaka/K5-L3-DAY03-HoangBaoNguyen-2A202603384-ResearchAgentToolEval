@@ -1,0 +1,731 @@
+{
+  "run_id": "v3_B_group_openrouter_20261110T111902417653",
+  "version": "v3",
+  "artifact_version": "v3+p7b1b6f81b1b2+t82b1e32858ff",
+  "prompt_hash": "7b1b6f81b1b23e6cd54bb1f9bec6484a82b8761aa2cda79c8489bfc196a84453",
+  "tools_hash": "82b1e32858ffb7cee4d739a6cfad73dbcf2f8e5ed7c90536d534356a284d846e",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "C:\\Users\\Acer\\Downloads\\111000\\Day03-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "C:\\Users\\Acer\\Downloads\\111000\\Day03-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp: 3 tool nhóm tự thêm (wiki/hn_search/now), carryover tham số mới (lang), thu hẹp nguồn sang Hacker News, clarify dạng choice, và boundary gửi Telegram trong ngữ cảnh multiturn.",
+  "generated_at": "2026-11-10T11:19:02",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 10,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_wiki_background_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_background_to_wiki",
+        "difficulty": "medium",
+        "what_it_tests": "Câu hỏi nền tảng/là-ai về một người nổi tiếng → tool mới wiki (không phải lookup news hay timeline)."
+      },
+      "input": "Sam Altman là ai vậy? Cho mình đôi nét nền tảng.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "wiki",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "wiki",
+            "args": {
+              "topic": "Sam Altman"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "wiki",
+          "args": {
+            "topic": "Sam Altman"
+          },
+          "result": {
+            "tool": "wiki_lookup",
+            "topic": "Sam Altman",
+            "lang": "vi",
+            "title": "Sam Altman",
+            "description": "Nhà đầu tư mạo hiểm người Mỹ ở Thung lũng Silicon",
+            "summary": "Samuel H. Altman là một doanh nhân, nhà đầu tư và lập trình viên người Mỹ. Ông là giám đốc điều hành của OpenAI và là cựu chủ tịch của Y Combinator. Altman cũng là người đồng sáng lập Loopt và Worldcoin.",
+            "url": "https://vi.wikipedia.org/wiki/Sam_Altman",
+            "source": "vi.wikipedia.org"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_hn_search_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_hn_discussion",
+        "difficulty": "medium",
+        "what_it_tests": "Muốn góc nhìn cộng đồng tech (Hacker News) → tool mới hn_search, không dùng lookup hay social_search."
+      },
+      "input": "Cộng đồng tech trên Hacker News đang bàn gì về Rust?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {
+              "query": "Rust"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {
+              "query": "Rust",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "hn_search",
+          "args": {
+            "query": "Rust",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_hackernews",
+            "query": "Rust",
+            "tags": "story",
+            "total_hits": 61396,
+            "items": [
+              {
+                "title": "Why Discord is switching from Go to Rust",
+                "url": "https://blog.discordapp.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f",
+                "source": "blog.discordapp.com",
+                "summary": null,
+                "points": 1582,
+                "comments": 642,
+                "author": "Sikul",
+                "date": "2020-02-04T17:30:40Z"
+              },
+              {
+                "title": "Leaving Rust gamedev after 3 years",
+                "url": "https://loglog.games/blog/leaving-rust-gamedev/",
+                "source": "loglog.games",
+                "summary": null,
+                "points": 1484,
+                "comments": 972,
+                "author": "darthdeus",
+                "date": "2024-04-26T17:33:56Z"
+              },
+              {
+                "title": "A half-hour to learn Rust",
+                "url": "https://fasterthanli.me/articles/a-half-hour-to-learn-rust",
+                "source": "fasterthanli.me",
+                "summary": null,
+                "points": 1444,
+                "comments": 330,
+                "author": "selvan",
+                "date": "2021-01-02T05:50:39Z"
+              },
+              {
+                "title": "Announcing Rust 1.0",
+                "url": "http://blog.rust-lang.org/2015/05/15/Rust-1.0.html",
+                "source": "blog.rust-lang.org",
+                "summary": null,
+                "points": 1363,
+                "comments": 306,
+                "author": "jhund",
+                "date": "2015-05-15T17:02:09Z"
+              },
+              {
+                "title": "CityBound – An open source city simulation game in Rust",
+                "url": "https://github.com/citybound/citybound",
+                "source": "github.com",
+                "summary": null,
+                "points": 1340,
+                "comments": 264,
+                "author": "formalsystem",
+                "date": "2019-04-05T15:18:45Z"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_now_tool_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_time_anchor",
+        "difficulty": "medium",
+        "what_it_tests": "Câu hỏi thời gian hiện tại → tool mới now (model không tự biết ngày thật, không được bịa hay gọi lookup)."
+      },
+      "input": "Hôm nay là ngày bao nhiêu, thứ mấy rồi?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "now",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "now",
+            "args": {}
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "now",
+          "args": {},
+          "result": {
+            "tool": "current_datetime",
+            "tz": "local",
+            "iso": "2026-11-10T11:18:38",
+            "date": "2026-11-10",
+            "time": "11:18:38",
+            "weekday_vi": "Thứ ba",
+            "note": "Use this to anchor relative time words like 'hôm nay', 'tuần này' before calling lookup."
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_timeline_seven_karpathy",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_nondefault_limit_handle_map",
+        "difficulty": "medium",
+        "what_it_tests": "Trích limit=7 không mặc định + map tên Andrej Karpathy → handle karpathy (không @, không dấu cách)."
+      },
+      "input": "Cho mình 7 tweet mới nhất của Andrej Karpathy",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 7
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 7
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "karpathy",
+            "limit": 7
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_out_of_scope_translation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_translation",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu dịch thuật ngoài phạm vi research → KHÔNG gọi tool nào, trả lời thẳng."
+      },
+      "input": "Dịch giúp mình câu 'I love artificial intelligence' sang tiếng Pháp",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse_or_answer_directly"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Câu \"I love artificial intelligence\" dịch sang tiếng Pháp là \"J'aime l'intelligence artificielle\".",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G06_background_then_news_carryover",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_general_to_news",
+        "difficulty": "hard",
+        "what_it_tests": "Latest turn chuyển từ hỏi nền (wiki) sang tin tức hôm nay: lookup query=VinUni (không thêm 'news' vào query), topic=news, timeframe=day."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "VinUni là trường gì vậy?"
+        },
+        {
+          "role": "user",
+          "content": "Hôm nay có tin gì về VinUni không?"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "VinUni",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "VinUni",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "VinUni",
+            "topic": "news",
+            "timeframe": "day"
+          },
+          "result": {
+            "tool": "web_search",
+            "error": "RuntimeError",
+            "message": "Missing TAVILY_API_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_narrow_to_hackernews",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_source_to_new_tool",
+        "difficulty": "hard",
+        "what_it_tests": "Latest turn yêu cầu nguồn Hacker News + giữ chủ đề → CHỈ gọi hn_search (tool mới), không gọi thêm lookup."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm tin về GPT-5 trên web giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Web nhiều spam quá, chuyển sang Hacker News đi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn chủ đề GPT-5 nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {
+              "query": "GPT-5"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {
+              "query": "GPT-5",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "hn_search",
+          "args": {
+            "query": "GPT-5",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_hackernews",
+            "query": "GPT-5",
+            "tags": "story",
+            "total_hits": 1604,
+            "items": [
+              {
+                "title": "GPT-5",
+                "url": "https://openai.com/gpt-5/",
+                "source": "openai.com",
+                "summary": "<a href=\"https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v=0Uu_VJeVVfo\" rel=\"nofollow\">https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v=0Uu_VJeVVfo</a>",
+                "points": 2063,
+                "comments": 2482,
+                "author": "rd",
+                "date": "2025-08-07T17:00:21Z"
+              },
+              {
+                "title": "GPT-5.5",
+                "url": "https://openai.com/index/introducing-gpt-5-5/",
+                "source": "openai.com",
+                "summary": null,
+                "points": 1580,
+                "comments": 1056,
+                "author": "rd",
+                "date": "2026-04-23T18:01:39Z"
+              },
+              {
+                "title": "GPT-5.6",
+                "url": "https://openai.com/index/gpt-5-6/",
+                "source": "openai.com",
+                "summary": "<a href=\"https:&#x2F;&#x2F;deploymentsafety.openai.com&#x2F;gpt-5-6&#x2F;gpt-5-6.pdf\" rel=\"nofollow\">https:&#x2F;&#x2F;deploymentsafety.openai.com&#x2F;gpt-5-6&#x2F;gpt-5-6.pdf</a><p><a href=\"https:&#x2F;&#x2F;developers.openai.com&#x2F;api&#x2F;docs&#x2F;guides&#x2F;latest-model\" rel=\"nofollow\">https:&#x2F;&#x2F;developers.openai.com&#x2F;api&#x2F;docs&#x2F;guides&#x2F;latest-model</a><p><a href=\"https:&#x2F;&#x2F;x.com&#x2F;levie&#x2F;status&#x2F;2075287443411222628\" rel=\"nofollow\">https:&#x2F",
+                "points": 1561,
+                "comments": 1112,
+                "author": "logickkk1",
+                "date": "2026-07-09T17:04:14Z"
+              },
+              {
+                "title": "GPT-5.3-Codex",
+                "url": "https://openai.com/index/introducing-gpt-5-3-codex/",
+                "source": "openai.com",
+                "summary": null,
+                "points": 1530,
+                "comments": 605,
+                "author": "meetpateltech",
+                "date": "2026-02-05T18:08:08Z"
+              },
+              {
+                "title": "GPT-5.2",
+                "url": "https://openai.com/index/introducing-gpt-5-2/",
+                "source": "openai.com",
+                "summary": "<a href=\"https:&#x2F;&#x2F;platform.openai.com&#x2F;docs&#x2F;guides&#x2F;latest-model\" rel=\"nofollow\">https:&#x2F;&#x2F;platform.openai.com&#x2F;docs&#x2F;guides&#x2F;latest-model</a><p>System card: <a href=\"https:&#x2F;&#x2F;cdn.openai.com&#x2F;pdf&#x2F;3a4153c8-c748-4b71-8e31-aecbde944f8d&#x2F;oai_5_2_system-card.pdf\" rel=\"nofollow\">https:&#x2F;&#x2F;cdn.openai.com&#x2F;pdf&#x2F;3a4153c8-c748-4b71-8e31-aecbde944...</a>",
+                "points": 1195,
+                "comments": 1083,
+                "author": "atgctg",
+                "date": "2025-12-11T18:04:47Z"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_clarify_choice_then_fill",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_choice_resolution",
+        "difficulty": "hard",
+        "what_it_tests": "Sau khi được hỏi, user chọn 1 trong 2 handle ở latest turn → timeline screenname=sama, KHÔNG gọi cả hai tài khoản."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt tweet giúp mình với"
+        },
+        {
+          "role": "user",
+          "content": "Hoặc của sama, hoặc của elonmusk"
+        },
+        {
+          "role": "user",
+          "content": "sama nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama"
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_wiki_lang_carryover",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover_lang_arg",
+        "difficulty": "hard",
+        "what_it_tests": "Carry chủ đề 'transformer' từ lượt 1 + áp lang=en của latest turn vào tool mới wiki (không rơi về mặc định vi)."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Định nghĩa 'transformer' trong machine learning giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Sang Wikipedia tiếng Anh nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "wiki",
+            "args": {
+              "lang": "en"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "wiki",
+            "args": {
+              "topic": "Transformer",
+              "lang": "en"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "wiki",
+          "args": {
+            "topic": "Transformer",
+            "lang": "en"
+          },
+          "result": {
+            "tool": "wiki_lookup",
+            "topic": "Transformer",
+            "lang": "en",
+            "title": "Transformer",
+            "description": "Device to couple energy between circuits",
+            "summary": "In electrical engineering, a transformer is a passive component that transfers electrical energy from one electrical circuit to another circuit, or multiple circuits. A varying current in any coil of the transformer produces a varying magnetic flux in the transformer's core, which induces a varying electromotive force (EMF) across any other coils wound around the same core. Electrical energy can be transferred between separate coils without a metallic (conductive) connection between the two circuits. Faraday's law of induction, discovered in 1831, describes the induced voltage effect in any coil due to a changing magnetic flux encircled by the coil.",
+            "url": "https://en.wikipedia.org/wiki/Transformer",
+            "source": "en.wikipedia.org"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G10_confirm_send_in_multiturn",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_confirm_before_send",
+        "difficulty": "hard",
+        "what_it_tests": "Dù user nói 'gửi nhé' trong ngữ cảnh, hành động ghi ngoài (send Telegram) vẫn phải clarify yes_no trước — KHÔNG gọi send trực tiếp."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tổng hợp tin AI hôm nay thành bản tin ngắn giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Được đấy, gửi lên Telegram nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn muốn gửi bản tin ngắn về tin AI hôm nay lên Telegram.",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn muốn gửi bản tin ngắn về tin AI hôm nay lên Telegram.",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn muốn gửi bản tin ngắn về tin AI hôm nay lên Telegram.",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    }
+  ]
+}
