@@ -1,5 +1,7 @@
 # Day 03 Lab v2 — Research Agent Tool Eval
 
+> Bản nộp hiện tại: xem [REPORT v6](starter_v0/artifacts/REPORT.md) để lấy URL public, thành viên và bằng chứng mới. V6 đạt 40/40 về chọn tool/tham số và hợp đồng phản hồi no_tool; 12/40 case còn lỗi thực thi tool. Telegram đang tắt trong runtime/UI; chưa nhận bonus gửi thật. Bộ unit test: 119 passed. Các hướng dẫn bên dưới là đề lab gốc.
+
 ## Brief
 
 Trong lab này, nhóm build một research agent nhỏ nhưng chạy thật. Agent nhận request của user, chọn tool, truyền arguments, chạy tool thật, lưu full JSON log, rồi dùng log đó để tối ưu prompt/tool declaration qua nhiều version.

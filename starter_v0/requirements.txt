@@ -10,3 +10,5 @@ pypdf>=4.0.0
 pytest>=8.0.0
 # Demo UI (app.py):
 streamlit>=1.37.0
+# Public app protocol smoke test (scripts/verify_public_app.py):
+websockets>=12.0

@@ -1,0 +1,1549 @@
+{
+  "run_id": "v6_B_base_openrouter_20261110T154548605449",
+  "version": "v6",
+  "artifact_version": "v6+pb4f4f9ad8016+t82b1e32858ff",
+  "prompt_hash": "b4f4f9ad80160f3d4558949e809c6aa42f3116f892a550ba828f094158c75766",
+  "tools_hash": "82b1e32858ffb7cee4d739a6cfad73dbcf2f8e5ed7c90536d534356a284d846e",
+  "phase": "B",
+  "suite": "base",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "C:\\Users\\Acer\\Downloads\\111000\\Day03-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "C:\\Users\\Acer\\Downloads\\111000\\Day03-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "C:\\Users\\Acer\\Downloads\\111000\\Day03-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\data\\eval_base.json",
+  "dataset_id": "day04_v2_research_base",
+  "dataset_role": "base",
+  "description": "Core eval cho research agent: routing đúng tool + đúng args, hỏi lại khi thiếu (ask_user), xác nhận trước khi gửi, và xử lý câu ngoài phạm vi / không cần tool. Chấm trên tool_calls + args (subset). KHÔNG sửa file này — chỉ thêm case vào eval_group.json.",
+  "generated_at": "2026-11-10T15:45:48",
+  "evaluator_hash": "52c0d609753072b13bf2d2c5f96f2397a09726e9fcba239995b360d934ab15d7",
+  "runtime_hash": "d792b28290182ac1ad4f535bb9a5100e62fc2edb38e781df3fde26f560cdd456",
+  "evaluation_scope": "tool selection/arguments + strict no_tool response contract; execution reported separately; not end-to-end answer quality",
+  "summary": {
+    "total_cases": 20,
+    "measured_cases": 20,
+    "provider_error_cases": 0,
+    "passed_cases": 20,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {},
+    "tool_execution_attempted_cases": 17,
+    "tool_execution_success_cases": 7,
+    "tool_execution_error_cases": 10,
+    "no_tool_cases": 3,
+    "response_behavior_cases": 3,
+    "response_behavior_passed": 3
+  },
+  "results": [
+    {
+      "id": "R01_user_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_user_tweets_name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tin CỦA một người nổi tiếng → map tên Sam Altman thành handle sama rồi gọi get_user_tweets."
+      },
+      "input": "Tweet mới nhất của Sam Altman là gì?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": false,
+        "tool_execution_errors": [
+          {
+            "tool": "timeline",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama"
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R02_search_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_search_tweets",
+        "difficulty": "easy",
+        "what_it_tests": "Tweet theo CHỦ ĐỀ → search_tweets, không phải get_user_tweets."
+      },
+      "input": "Mọi người đang bàn gì về GPT-5 trên Twitter?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "GPT-5",
+              "search_type": "Top"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": false,
+        "tool_execution_errors": [
+          {
+            "tool": "social_search",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "GPT-5",
+            "search_type": "Top"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R03_web_news_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_web_news",
+        "difficulty": "medium",
+        "what_it_tests": "Tin thời sự trên web → web_search topic=news, timeframe=day (hôm nay)."
+      },
+      "input": "Tin tức AI hôm nay có gì nổi bật?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": true,
+        "tool_execution_errors": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Bà nội trợ, shipper làm phim ngắn AI 1.000 tập hút 12 tỉ lượt xem - Tuổi Trẻ",
+                "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOWFRyS1VZTm5wekkzM0NWeEJoSjdSSDdpRmVsMVdHQnpiVEo0YV9GYWMxTmdmclFhZ3Q1YTFJU3Bwb1hrbFpGTWQwNHA4Uk9YVGVCaWF1dk1UMFhxalcyRU5feEhpM3o1VDNtMU9OQzN2S215UGk5U0wzMTkxbWVvbEdrbjBaRFBQcVJqV3hnZFlEdlpXREZPRVFQVmhYWTlLaFdmZVBkZ1k?oc=5",
+                "source": "Tuổi Trẻ",
+                "summary": "Bà nội trợ, shipper làm phim ngắn AI 1.000 tập hút 12 tỉ lượt xem &nbsp;&nbsp; Tuổi Trẻ",
+                "score": null,
+                "date": "Tue, 10 Nov 2026 06:35:00 GMT"
+              },
+              {
+                "title": "Thương nhớ ở ai | Tập 9 - VTVgo",
+                "url": "https://news.google.com/rss/articles/CBMiQEFVX3lxTE1mT3l6elg4Tk05V2xIdHZtd0QxOV9FUTl2UUlabHc2OTVPR1lHOVNrbmYybTZ0Vjl6LUVCSEFXanc?oc=5",
+                "source": "VTVgo",
+                "summary": "Thương nhớ ở ai | Tập 9 &nbsp;&nbsp; VTVgo",
+                "score": null,
+                "date": "Tue, 10 Nov 2026 00:00:00 GMT"
+              },
+              {
+                "title": "Samsung chuẩn bị thử nghiệm Galaxy AI trả phí - VnExpress",
+                "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNeUs0Z0FCdnBpbmIzZEtRaHc4RTZpUG00X0pUT2E2aEN1TUxWamZPVi1rc2llUG81RG4zWlNuVFBKRlNYR0NqcjlzTXhzaksxckRDWDZyWkZXSWpnTjlwTFVrUUd6bFl2ZDFkSzlSYVN1RU9NQlg5c1BDaW15SFFiYTJvSlZPcDQ?oc=5",
+                "source": "VnExpress",
+                "summary": "Samsung chuẩn bị thử nghiệm Galaxy AI trả phí &nbsp;&nbsp; VnExpress",
+                "score": null,
+                "date": "Tue, 10 Nov 2026 06:49:52 GMT"
+              },
+              {
+                "title": "Những chatbot AI nào phát thải nhiều nhất? Đây là những gì chúng ta biết - Bloomberg Businessweek Vietnam",
+                "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNMGszaWdoYUY2U0MwdmZjRWJWQ3duRWVTYWxadXo2UGdveE1kTXUwaFF6eG5IM2p3Mk1RMXRjSjdHOER2aVdpanlUMEphTUNLMDJjdTZPYXVJbjVFVEFNYUZYTm5TekNESDZKVFE1NmhPOGdmNnNQSnkyY3VCdnZrY3pBQzVPS2ZLLVdWSFMxOTZnSDhIbjBCaFRId1Y1QQ?oc=5",
+                "source": "Bloomberg Businessweek Vietnam",
+                "summary": "Những chatbot AI nào phát thải nhiều nhất? Đây là những gì chúng ta biết &nbsp;&nbsp; Bloomberg Businessweek Vietnam",
+                "score": null,
+                "date": "Tue, 10 Nov 2026 08:10:00 GMT"
+              },
+              {
+                "title": "Học sinh tiểu học được hướng dẫn thực hành AI bài bản, chủ động sáng tạo - chinhsachcuocsong.vnanet.vn",
+                "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPbUxPcl9RYmRQYTJ4Q2hyRllkLWhaZFk0VEdUczF5V2hrV2J1VndsdGtNaVcteGp5QUc3RHJVTVZENHJ0YnUwVU9KdXhDei15c3ZKZ2lzcDZpZDIzM1cwUGlnbnhQRmtrcjgwMDhBV1F5V0Nhc3BMelp3N0dJTnNfTVIwaWFta09mS3o3THdzODdnaDZvTVFxbDhqTHREQW9RVkVuNDVOc0Zrb19PNE5Qby1rdm45TEdmMjdJ?oc=5",
+                "source": "chinhsachcuocsong.vnanet.vn",
+                "summary": "Học sinh tiểu học được hướng dẫn thực hành AI bài bản, chủ động sáng tạo &nbsp;&nbsp; chinhsachcuocsong.vnanet.vn",
+                "score": null,
+                "date": "Tue, 10 Nov 2026 07:22:00 GMT"
+              }
+            ],
+            "fallback": "google_news_rss",
+            "note": "Keyless fallback (no TAVILY_API_KEY). Results come from Google News RSS."
+          }
+        }
+      ]
+    },
+    {
+      "id": "R04_read_url_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_read_url",
+        "difficulty": "easy",
+        "what_it_tests": "Đã có link cụ thể → read_url, không phải web_search."
+      },
+      "input": "Tóm tắt bài này giúp mình: https://openai.com/blog/gpt-5",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": false,
+        "tool_execution_errors": [
+          {
+            "tool": "fetch",
+            "error": "HTTPError",
+            "message": "404 Client Error: Not Found for url: https://openai.com/index/gpt-5/"
+          }
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://openai.com/blog/gpt-5"
+          },
+          "result": {
+            "tool": "read_url",
+            "error": "HTTPError",
+            "message": "404 Client Error: Not Found for url: https://openai.com/index/gpt-5/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R05_limit_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_limit",
+        "difficulty": "easy",
+        "what_it_tests": "Trích đúng limit=10 từ '10 tweet'."
+      },
+      "input": "Lấy 10 tweet mới nhất của Elon Musk",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": false,
+        "tool_execution_errors": [
+          {
+            "tool": "timeline",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 10
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R06_timeframe_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "'tuần này' → timeframe=week."
+      },
+      "input": "Tin công nghệ trong tuần này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "week"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "công nghệ",
+              "topic": "news",
+              "timeframe": "week"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": true,
+        "tool_execution_errors": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "công nghệ",
+            "topic": "news",
+            "timeframe": "week"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "công nghệ",
+            "topic": "news",
+            "timeframe": "week",
+            "items": [
+              {
+                "title": "19 công trình giành giải nhất Khoa học và Công nghệ dành cho sinh viên - VnExpress",
+                "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOWVRPY0tqSWdBLUtjS1VCekdiQTFFZE1WTl84eWVzTTh3TFpldFZYTlZTWjVnZ1JuSlc5N1FMZ3JSZTF5dlNiSFJ6RzVWelJjSFl3Y19vSkZjSmJydHBjMjlGazRUVXAyRW4tTGticVZmdEtnRjJfSk5OMHF1R21vVlJqX2lkZWUwbzVqMWRORjlVMDkxaHc?oc=5",
+                "source": "VnExpress",
+                "summary": "19 công trình giành giải nhất Khoa học và Công nghệ dành cho sinh viên &nbsp;&nbsp; VnExpress",
+                "score": null,
+                "date": "Sat, 07 Nov 2026 06:04:22 GMT"
+              },
+              {
+                "title": "Cổ phiếu công nghệ Mỹ bị bán tháo, thổi bay mức kỷ lục 2.300 tỷ USD vốn hóa - Báo Dân trí",
+                "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOdHowMUVnZnpIdnM0R2ZxY014dkU2NEQ3Z25iS0lVbjhmSEJJZlZ2MWN3RWx4WVNEWXJxaldjVDI0NkFtRF9fSTVaY0xHMFRabTk2M01RUXF2MVZvUHFoOGFJcWt1aGVOUWVMb1pyMjNCeEN2ZDZ6MkJ1UHNYMjJXWTN4T1NIYWExbjlqUWlKazNYYWhlMXJIb3RjcGsxNzQ4YjJyNVBCaEk3OUZjelVoa3B2SUFISjRaVWJqSFRIc1JIRldEcnh3?oc=5",
+                "source": "Báo Dân trí",
+                "summary": "Cổ phiếu công nghệ Mỹ bị bán tháo, thổi bay mức kỷ lục 2.300 tỷ USD vốn hóa &nbsp;&nbsp; Báo Dân trí",
+                "score": null,
+                "date": "Fri, 06 Nov 2026 01:47:41 GMT"
+              },
+              {
+                "title": "Sở Khoa học và Công nghệ Hà Tĩnh hướng dẫn xét công nhận sáng kiến và đánh giá hiệu quả đề tài khoa học - Cổng thông tin điện tử tỉnh Hà Tĩnh",
+                "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxQTUFfS1k3dlUxdEtBRVpCZEotLVBqenNkVmxiZUhKd3NIVWg1Zml3ZUtQd3NDWW1BU3ZXcUh1bEV1X2hDb05HTzFMQ3R2ZkhuNXhCRlZJMGdpMktwams5NGJwcWFxekxmX2FQSURfRVJESzRYMzVnX2ZYcHV0MTFzX0tuZWhSUVdOTkI1MzVPTG1LekVBaHU0MVBzNU5DSTNQZ2FTbDhSRVN5NlpQdjBCNzJRdGxvLS0tV0N1SmdrM2NiZGhQeDUyeDZXZFNvbUl3SUdN?oc=5",
+                "source": "Cổng thông tin điện tử tỉnh Hà Tĩnh",
+                "summary": "Sở Khoa học và Công nghệ Hà Tĩnh hướng dẫn xét công nhận sáng kiến và đánh giá hiệu quả đề tài khoa học &nbsp;&nbsp; Cổng thông tin điện tử tỉnh Hà Tĩnh",
+                "score": null,
+                "date": "Sun, 08 Nov 2026 08:00:00 GMT"
+              },
+              {
+                "title": "Tổng Bí thư, Chủ tịch nước Tô Lâm dự Diễn đàn Công tư về hợp tác kinh tế và khoa học-công nghệ Việt Nam-Nhật Bản - baochinhphu.vn",
+                "url": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxOaHVCZE91RDU3NGxodFdoVW5rNVgyZ3VwbDRMTlB1NjVGOVFaSDA1bnBVSGUyanlSQVktTVY0WVhaS2hKNF9Fci0wWjRZd0dhYkNORVhpVXEtdk9EWXlMLTdTTkRVZnZQWDZhUkUtTGJjTHZ1aEJ5MVhlckdMeWl1OXJaZUJybXpRUFVCNnBoTjdUemRiREo2NWlRUE10YzBleFNhZDk0dGNXN3A2eV81M1VVTmI2TFFNdE5FdTc2Vjh0NUhNZ2F1OW1mZmktSzdtdkNqZG1zUmZCUGpqdmhEcEJraVFWX3BTbTdXWXRR?oc=5",
+                "source": "baochinhphu.vn",
+                "summary": "Tổng Bí thư, Chủ tịch nước Tô Lâm dự Diễn đàn Công tư về hợp tác kinh tế và khoa học-công nghệ Việt Nam-Nhật Bản &nbsp;&nbsp; baochinhphu.vn",
+                "score": null,
+                "date": "Mon, 09 Nov 2026 05:01:00 GMT"
+              },
+              {
+                "title": "'Ông trùm' công nghệ Nvidia ngoại tình với một phụ nữ bị nghi là gián điệp - Báo VietNamNet",
+                "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNZzZISW5pOGF5TnB5NGJzajhiUFBxX202dmRVZmItR20yMjg0alFsbEdzZDEzd2ttd1h6NjZnaHBKZ1hSUzhMcF9Fa0tGTlJLNXgzNHZoWVRNVWVjSXBvQ0tVN2x0RVRBR1QwYXZJSnJOeDQ0RG1MNm1ZQW80TWJiRlZmbjNUdmZkSHl0VEt6d2VBLTVoQlpkU1VDUG55NlRx?oc=5",
+                "source": "Báo VietNamNet",
+                "summary": "'Ông trùm' công nghệ Nvidia ngoại tình với một phụ nữ bị nghi là gián điệp &nbsp;&nbsp; Báo VietNamNet",
+                "score": null,
+                "date": "Sun, 08 Nov 2026 23:09:00 GMT"
+              }
+            ],
+            "fallback": "google_news_rss",
+            "note": "Keyless fallback (no TAVILY_API_KEY). Results come from Google News RSS."
+          }
+        }
+      ]
+    },
+    {
+      "id": "R07_search_type_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type",
+        "difficulty": "medium",
+        "what_it_tests": "'phổ biến/top' → search_type=Top (không phải Latest)."
+      },
+      "input": "Cho mình các tweet phổ biến (top) nhất về OpenAI",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Top"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": false,
+        "tool_execution_errors": [
+          {
+            "tool": "social_search",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "OpenAI",
+            "search_type": "Top"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R08_out_of_scope",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Câu ngoài phạm vi research → KHÔNG gọi tool, từ chối/định hướng."
+      },
+      "input": "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "behavior_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Yêu cầu này nằm ngoài phạm vi của trợ lý nghiên cứu. Mình có thể giúp tìm tin tức, tra cứu nguồn và tóm tắt tài liệu.",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": false,
+        "tool_execution_succeeded": null,
+        "tool_execution_errors": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R09_no_tool_capability",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "no_tool_meta",
+        "difficulty": "easy",
+        "what_it_tests": "Câu hỏi meta → trả lời thẳng, KHÔNG gọi tool."
+      },
+      "input": "Bạn là gì và làm được những gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "behavior_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Mình là trợ lý nghiên cứu, có khả năng giúp bạn theo dõi tin tức, tìm kiếm thông tin, đọc và tóm tắt tài liệu, cũng như tìm kiếm các bài báo khoa học. Nếu bạn cần thông tin cụ thể, hãy cho mình biết!",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": false,
+        "tool_execution_succeeded": null,
+        "tool_execution_errors": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R10_missing_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Thiếu handle → ask_user, KHÔNG đoán bừa người nào."
+      },
+      "input": "Tóm tắt 5 tweet mới nhất giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn muốn xem tweet của ai?",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": true,
+        "tool_execution_errors": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn muốn xem tweet của ai?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn muốn xem tweet của ai?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "R11_missing_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_url",
+        "difficulty": "medium",
+        "what_it_tests": "Nói 'bài này' nhưng không có link → ask_user xin URL."
+      },
+      "input": "Tóm tắt bài viết này hộ mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có thể cung cấp URL của bài viết mà bạn muốn tóm tắt không?",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": true,
+        "tool_execution_errors": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có thể cung cấp URL của bài viết mà bạn muốn tóm tắt không?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có thể cung cấp URL của bài viết mà bạn muốn tóm tắt không?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "R12_confirm_before_send",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_write",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động ghi (gửi) → xác nhận trước (ask_user yes_no), không tự gửi."
+      },
+      "input": "Đăng bản tin này lên Telegram giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có muốn chuẩn bị và xem lại bản nháp trước khi gửi không?",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": true,
+        "tool_execution_errors": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có muốn chuẩn bị và xem lại bản nháp trước khi gửi không?",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có muốn chuẩn bị và xem lại bản nháp trước khi gửi không?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "R13_parallel_web_and_tweets",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "parallel_tool_calls",
+        "difficulty": "hard",
+        "what_it_tests": "Một request cần hai nguồn → gọi cả web_search và search_tweets; eval không phụ thuộc thứ tự tool call."
+      },
+      "input": "Tìm trên web tin AI hôm nay và tìm thêm tweet về AI.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI",
+              "search_type": "Latest"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": false,
+        "tool_execution_errors": [
+          {
+            "tool": "social_search",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Bà nội trợ, shipper làm phim ngắn AI 1.000 tập hút 12 tỉ lượt xem - Tuổi Trẻ",
+                "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOWFRyS1VZTm5wekkzM0NWeEJoSjdSSDdpRmVsMVdHQnpiVEo0YV9GYWMxTmdmclFhZ3Q1YTFJU3Bwb1hrbFpGTWQwNHA4Uk9YVGVCaWF1dk1UMFhxalcyRU5feEhpM3o1VDNtMU9OQzN2S215UGk5U0wzMTkxbWVvbEdrbjBaRFBQcVJqV3hnZFlEdlpXREZPRVFQVmhYWTlLaFdmZVBkZ1k?oc=5",
+                "source": "Tuổi Trẻ",
+                "summary": "Bà nội trợ, shipper làm phim ngắn AI 1.000 tập hút 12 tỉ lượt xem &nbsp;&nbsp; Tuổi Trẻ",
+                "score": null,
+                "date": "Tue, 10 Nov 2026 06:35:00 GMT"
+              },
+              {
+                "title": "Thương nhớ ở ai | Tập 9 - VTVgo",
+                "url": "https://news.google.com/rss/articles/CBMiQEFVX3lxTE1mT3l6elg4Tk05V2xIdHZtd0QxOV9FUTl2UUlabHc2OTVPR1lHOVNrbmYybTZ0Vjl6LUVCSEFXanc?oc=5",
+                "source": "VTVgo",
+                "summary": "Thương nhớ ở ai | Tập 9 &nbsp;&nbsp; VTVgo",
+                "score": null,
+                "date": "Tue, 10 Nov 2026 00:00:00 GMT"
+              },
+              {
+                "title": "Samsung chuẩn bị thử nghiệm Galaxy AI trả phí - VnExpress",
+                "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNeUs0Z0FCdnBpbmIzZEtRaHc4RTZpUG00X0pUT2E2aEN1TUxWamZPVi1rc2llUG81RG4zWlNuVFBKRlNYR0NqcjlzTXhzaksxckRDWDZyWkZXSWpnTjlwTFVrUUd6bFl2ZDFkSzlSYVN1RU9NQlg5c1BDaW15SFFiYTJvSlZPcDQ?oc=5",
+                "source": "VnExpress",
+                "summary": "Samsung chuẩn bị thử nghiệm Galaxy AI trả phí &nbsp;&nbsp; VnExpress",
+                "score": null,
+                "date": "Tue, 10 Nov 2026 06:49:52 GMT"
+              },
+              {
+                "title": "Những chatbot AI nào phát thải nhiều nhất? Đây là những gì chúng ta biết - Bloomberg Businessweek Vietnam",
+                "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNMGszaWdoYUY2U0MwdmZjRWJWQ3duRWVTYWxadXo2UGdveE1kTXUwaFF6eG5IM2p3Mk1RMXRjSjdHOER2aVdpanlUMEphTUNLMDJjdTZPYXVJbjVFVEFNYUZYTm5TekNESDZKVFE1NmhPOGdmNnNQSnkyY3VCdnZrY3pBQzVPS2ZLLVdWSFMxOTZnSDhIbjBCaFRId1Y1QQ?oc=5",
+                "source": "Bloomberg Businessweek Vietnam",
+                "summary": "Những chatbot AI nào phát thải nhiều nhất? Đây là những gì chúng ta biết &nbsp;&nbsp; Bloomberg Businessweek Vietnam",
+                "score": null,
+                "date": "Tue, 10 Nov 2026 08:10:00 GMT"
+              },
+              {
+                "title": "Học sinh tiểu học được hướng dẫn thực hành AI bài bản, chủ động sáng tạo - chinhsachcuocsong.vnanet.vn",
+                "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPbUxPcl9RYmRQYTJ4Q2hyRllkLWhaZFk0VEdUczF5V2hrV2J1VndsdGtNaVcteGp5QUc3RHJVTVZENHJ0YnUwVU9KdXhDei15c3ZKZ2lzcDZpZDIzM1cwUGlnbnhQRmtrcjgwMDhBV1F5V0Nhc3BMelp3N0dJTnNfTVIwaWFta09mS3o3THdzODdnaDZvTVFxbDhqTHREQW9RVkVuNDVOc0Zrb19PNE5Qby1rdm45TEdmMjdJ?oc=5",
+                "source": "chinhsachcuocsong.vnanet.vn",
+                "summary": "Học sinh tiểu học được hướng dẫn thực hành AI bài bản, chủ động sáng tạo &nbsp;&nbsp; chinhsachcuocsong.vnanet.vn",
+                "score": null,
+                "date": "Tue, 10 Nov 2026 07:22:00 GMT"
+              }
+            ],
+            "fallback": "google_news_rss",
+            "note": "Keyless fallback (no TAVILY_API_KEY). Results come from Google News RSS."
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "AI",
+            "search_type": "Latest"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R14_out_of_scope_coding",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_coding",
+        "difficulty": "easy",
+        "what_it_tests": "Câu coding ngoài phạm vi research/news → KHÔNG gọi tool."
+      },
+      "input": "Viết giúp mình một hàm Python tính Fibonacci bằng recursion.",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "behavior_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Yêu cầu này nằm ngoài phạm vi của trợ lý nghiên cứu. Mình có thể giúp tìm tin tức, tra cứu nguồn và tóm tắt tài liệu.",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": false,
+        "tool_execution_succeeded": null,
+        "tool_execution_errors": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M01_clarify_then_fill",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_fill",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: carry limit=5 từ lượt 1 + map tên Elon Musk thành handle elonmusk từ lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt 5 tweet mới nhất giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Của Elon Musk nhé"
+        },
+        {
+          "role": "user",
+          "content": "Giữ đúng 5 tweet, đừng đổi số lượng"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": false,
+        "tool_execution_errors": [
+          {
+            "tool": "timeline",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "M02_carryover_timeframe",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: chỉ xử lý latest turn, carry timeframe=day và topic=news, query robotics."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Còn về robotics thì sao?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ tìm robotics thôi, vẫn là tin hôm nay"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": true,
+        "tool_execution_errors": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "robotics",
+            "topic": "news",
+            "timeframe": "day"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "robotics",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "HUTECH ROBOTICS CHALLENGE 2026 – ĐỈNH CAO SÂN CHƠI CÔNG NGHỆ KHỐI NGÀNH KỸ THUẬT CHÍNH THỨC KHỞI TRANH! - VIỆN KỸ THUẬT - hutech.edu.vn",
+                "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxOOVRNRXhQSHhiSjdTcWJGOThXWmRJZ3BEcjVGYW80a0pfaU9OTXV0c3BDeW5hbkNoTFJtQ3U3OTE1MkhMbFllbUxKeFI5MlRzYy1xWTZFd3F6SjN3M3pMRmFTOE9BczJ1RUJCNkxEVDZNN0dtMXBwSVZEbllXTW53dFkwV3haSVU4cTRpS015V0pGZDE2OHpEQjNLMDZ0NXJXc2szTzNjZ2tJS09BdEdQOVpMM0x5ZUp5Qk9jTXZIZTNFR2Y5SHlfU094VXZ6eUVVUFBJN0JKQk1sSHplQ2hWM3V2NWdoNV9zMVVKQ0hDc2JaODNQcUE?oc=5",
+                "source": "hutech.edu.vn",
+                "summary": "HUTECH ROBOTICS CHALLENGE 2026 – ĐỈNH CAO SÂN CHƠI CÔNG NGHỆ KHỐI NGÀNH KỸ THUẬT CHÍNH THỨC KHỞI TRANH! - VIỆN KỸ THUẬT &nbsp;&nbsp; hutech.edu.vn",
+                "score": null,
+                "date": "Mon, 09 Nov 2026 16:19:38 GMT"
+              },
+              {
+                "title": "Advanced technology for supporting treatment - Vietnam.vn",
+                "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE16YTZsZndpTGJlY0FIakJyQkdqV2FYV2JNOEx4aVRhNVZSV1RfMTJlVmhKSEc0UmFlWUVzTnVPNVB2ZkdFVHlwTmxzRlZfWk40T1pkMEJKVDg1WUxlS2UyQ3RhNnljYldpdnZZWEdnVQ?oc=5",
+                "source": "Vietnam.vn",
+                "summary": "Advanced technology for supporting treatment &nbsp;&nbsp; Vietnam.vn",
+                "score": null,
+                "date": "Tue, 10 Nov 2026 02:24:36 GMT"
+              },
+              {
+                "title": "Humble Robotics gọi vốn 51 triệu USD, đưa Humble Hauler lên giai đoạn tiền sản xuất - 디지털투데이",
+                "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQSVhWTWtDdnlVT0oxS2g1ZTBfMGxicjhiVmpEbDNQejE0d2VEZXRvLUJtbnlQU2owYlRMUnJKNGtnaVdNcWx0NFRINGRhSW1WeXpyYUNpaTZDN3ItWk1sbEo3UmZ4LVFMcmVtZWJYMnJQQ3drUlVrbHk1dEt2Ql9nMHFFMERkZU9BRE05SmdkdjJvcFN3ajZ1a2ZiN0NSam1jS0JvZzMxcENLVGxoU3BhZ19fU19XbzdObDc2X3NYUQ?oc=5",
+                "source": "디지털투데이",
+                "summary": "Humble Robotics gọi vốn 51 triệu USD, đưa Humble Hauler lên giai đoạn tiền sản xuất &nbsp;&nbsp; 디지털투데이",
+                "score": null,
+                "date": "Tue, 10 Nov 2026 06:28:09 GMT"
+              },
+              {
+                "title": "Gói thầu STEM Robotics hơn 1,9 tỷ đồng tại Trường Vạn Bảo chỉ một nhà thầu tham dự - Báo Tri thức và Cuộc sống",
+                "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxPLUdQQmJFQnpDaEVmTUFDS1NpVGtQMVBqbHBPcHNJREhVbVExYTA1b3N3MGwzbUhzcUhFSG5HdUc0XzBpUlBkQ09sdXpBaGgwUFZxSTNaV3FxVmktS1NMUlRzMkQ4MnJXRUQ1M09jZDBuTk9CMVF0a3dvMlpWTHR6Qy1DdGhBYmRPeklHTmlpSWxpSUdZSmRybVg5OGdaRUoySmJTc2ZNZENrV3h2akJqempacDMtNlZIaHVDWE4yb0xpNzNucWY3dWs3ZXFpS3Z2U2otTlplRQ?oc=5",
+                "source": "Báo Tri thức và Cuộc sống",
+                "summary": "Gói thầu STEM Robotics hơn 1,9 tỷ đồng tại Trường Vạn Bảo chỉ một nhà thầu tham dự &nbsp;&nbsp; Báo Tri thức và Cuộc sống",
+                "score": null,
+                "date": "Mon, 09 Nov 2026 12:49:00 GMT"
+              },
+              {
+                "title": "Bắc Ninh: Gặp mặt 20 đội thi Vòng khu vực Cuộc thi Sáng tạo Robotics toàn quốc năm 2026 - Báo Bắc Ninh",
+                "url": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxOTDBzN0xnWE1jMnBzV2ItbnRsWnpaTGg1QlVPODhrS0FpdTFXRkxZQ3VkS19jdXBFM2tQb0M3WmdUNGhzS2Q4bXRPMC0yNVdOQTc0TlFKWFh5emctOFE0dWlmbTNRaWVVRjB6VzFZT1JpNTAzd1ZULS1XMFkxczFaaGlSckMtMXlOaXpkU3pkTWtjdGw1SWNKelJuRUpQQjFtSHRfVkFwOUxyNDJzTER0aHp0VUZKUzJtRC1zdS1HMTY0bWMyOXNIR2VWMUxKVzFNaWV6NzBYOVZERGljWDBV?oc=5",
+                "source": "Báo Bắc Ninh",
+                "summary": "Bắc Ninh: Gặp mặt 20 đội thi Vòng khu vực Cuộc thi Sáng tạo Robotics toàn quốc năm 2026 &nbsp;&nbsp; Báo Bắc Ninh",
+                "score": null,
+                "date": "Mon, 09 Nov 2026 09:33:41 GMT"
+              }
+            ],
+            "fallback": "google_news_rss",
+            "note": "Keyless fallback (no TAVILY_API_KEY). Results come from Google News RSS."
+          }
+        }
+      ]
+    },
+    {
+      "id": "M03_correction_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên thường, sửa Sam Altman→Andrej Karpathy, dùng handle karpathy và limit=3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "À nhầm, của Andrej Karpathy"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 3 tweet mới nhất nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": false,
+        "tool_execution_errors": [
+          {
+            "tool": "timeline",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "karpathy",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "M04_clarify_then_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_url",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: sau khi được cung cấp URL, latest turn xác nhận chỉ đọc link đó → read_url đúng url."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này hộ mình"
+        },
+        {
+          "role": "user",
+          "content": "https://anthropic.com/news/claude"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc đúng link đó thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": false,
+        "tool_execution_errors": [
+          {
+            "tool": "fetch",
+            "error": "HTTPError",
+            "message": "404 Client Error: Not Found for url: https://www.anthropic.com/news/claude"
+          }
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://anthropic.com/news/claude"
+          },
+          "result": {
+            "tool": "read_url",
+            "error": "HTTPError",
+            "message": "404 Client Error: Not Found for url: https://www.anthropic.com/news/claude"
+          }
+        }
+      ]
+    },
+    {
+      "id": "M05_correction_limit",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_arg_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên Elon Musk, carry handle elonmusk, sửa limit 10→3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 10 tweet mới nhất của Elon Musk"
+        },
+        {
+          "role": "user",
+          "content": "Cho mình 3 thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn của Elon Musk nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": false,
+        "tool_execution_errors": [
+          {
+            "tool": "timeline",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "M06_switch_tool",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_tool",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: explicitly bỏ Twitter, chuyển sang web_search news, giữ chủ đề OpenAI."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mọi người nói gì về OpenAI trên Twitter?"
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter, chuyển sang tìm trên web tin tức đi"
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề OpenAI"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": [],
+        "tool_execution_attempted": true,
+        "tool_execution_succeeded": true,
+        "tool_execution_errors": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "OpenAI",
+            "topic": "news"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "OpenAI",
+            "topic": "news",
+            "timeframe": "week",
+            "items": [
+              {
+                "title": "Lương 76.000 USD, không nắm cổ phần OpenAI: Sam Altman có 3,3 tỷ USD thế nào? - Báo Dân trí",
+                "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOM1RKeEprSjRyRVFoRk1fbUJmTnQzbXk4UHZrRzVxYXY1NGVTZG40YUJVN1lRaHljd201d2I0SnA2RFZUdzZYU0dOa1hWTFFRVEpIMVBlaVBJQWxWRWJtQTJ4aTVKdW9XUmNTSW9tc2tMR3FSbFJCcTRUYnJXOXBzNFVUbmUzS25zNUhZRVBVNHhYSVBnS3RneFl4R1V6OXdnUGNKbWI3d295Y3VrSFZDMUtLT0hidVFfWDJuM1Z1QmdCTHpSQVE?oc=5",
+                "source": "Báo Dân trí",
+                "summary": "Lương 76.000 USD, không nắm cổ phần OpenAI: Sam Altman có 3,3 tỷ USD thế nào? &nbsp;&nbsp; Báo Dân trí",
+                "score": null,
+                "date": "Sun, 08 Nov 2026 03:41:00 GMT"
+              },
+              {
+                "title": "Heimstaden đổi mới cách quản lý nhà ở bằng AI - OpenAI",
+                "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE04XzRQT1RWTFNpSno5aGlmbGZsMDhTY05ZQURtVGNLdldRQU5rXzhnRlJOaFVsUjYyV3VKN0pkdGROU25WejZzNE5lWmJtbnEtS2dscg?oc=5",
+                "source": "OpenAI",
+                "summary": "Heimstaden đổi mới cách quản lý nhà ở bằng AI &nbsp;&nbsp; OpenAI",
+                "score": null,
+                "date": "Tue, 03 Nov 2026 22:42:22 GMT"
+              },
+              {
+                "title": "OpenAI được định giá 1.250 tỷ USD - VnExpress",
+                "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1jWnFzeVBka3JaWk1MQkZIRktvVkNaTm5jLWVwcGZSWUZjZ0VaVFJ1bHoxUXFNX3d4TzJndF9IZTFlSi1vazJzb3JJUFVBNUdkOUx5bXptbnFfTjhVa3JUS1JxTDNhd2lWNHZBMGZvRVhWaFNJamVv?oc=5",
+                "source": "VnExpress",
+                "summary": "OpenAI được định giá 1.250 tỷ USD &nbsp;&nbsp; VnExpress",
+                "score": null,
+                "date": "Sat, 07 Nov 2026 03:35:31 GMT"
+              },
+              {
+                "title": "OpenAI ra gói 100 USD/tháng, nhắm thẳng vào người dùng Claude - GenK.vn",
+                "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNYXFORGdaZjNVVWlZNE85Wkg3YnZOb3R2LWlpT3BManI3ZEpvd2VkdkZWUTBQcm5Rb21YdFpyejNIRE03b2ZSY21halBqSlUyVWNNOUQzbmxsZDZZeFg4MWRtRHQ5S2ZzSnZvME1kZTdaY3ZyeldEWnhhczhRbl9pSDA1SU5IUFlEY0ozOFlhR2hVRV9YdXZyN3hMM0Y3c05K?oc=5",
+                "source": "GenK.vn",
+                "summary": "OpenAI ra gói 100 USD/tháng, nhắm thẳng vào người dùng Claude &nbsp;&nbsp; GenK.vn",
+                "score": null,
+                "date": "Wed, 04 Nov 2026 08:00:00 GMT"
+              },
+              {
+                "title": "OpenAI bổ nhiệm cựu Bộ trưởng Bộ Lục quân Mỹ làm cố vấn cấp cao - Laodong.vn",
+                "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNb3RtTV92LWFYd0pDdjZXclV0ZkNpaFVXVDR3Z1BoSlAyWlVHOV93NFZPTS1acEFzTHpmRURVeUFTaGN5cXJNbUhlUGdTMDlSOXpRSmxXUEphSWlIYW5YbmV2em5wTlZabmNTZWE3TzNyTXRwZlZMYU9OT2lCUEhuMnp1N3c4M2ZhOTN6akQwc3h6bkZFbDhPLTBYZU9IeDFra3BiX25n?oc=5",
+                "source": "Laodong.vn",
+                "summary": "OpenAI bổ nhiệm cựu Bộ trưởng Bộ Lục quân Mỹ làm cố vấn cấp cao &nbsp;&nbsp; Laodong.vn",
+                "score": null,
+                "date": "Tue, 03 Nov 2026 10:48:59 GMT"
+              }
+            ],
+            "fallback": "google_news_rss",
+            "note": "Keyless fallback (no TAVILY_API_KEY). Results come from Google News RSS."
+          }
+        }
+      ]
+    }
+  ]
+}

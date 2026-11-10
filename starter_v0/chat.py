@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import re
 from datetime import datetime
 from pathlib import Path
@@ -10,7 +11,8 @@ from typing import Any
 from env_loader import load_lab_env
 from providers import make_provider
 from providers.base import ToolCall
-from tools import TOOL_FUNCTIONS, load_tool_declarations, to_openai_tools
+from tools import load_tool_declarations, to_openai_tools
+from tool_execution import execute_tool_call
 from versioning import artifact_version_dict, build_artifact_version
 
 
@@ -39,21 +41,6 @@ def trim_history(history: list[dict[str, str]], window: int) -> list[dict[str, s
     if window <= 0:
         return []
     return history[-window * 2:]
-
-
-def execute_tool_call(call: ToolCall) -> dict[str, Any]:
-    func = TOOL_FUNCTIONS.get(call.name)
-    if not func:
-        return {
-            "tool": call.name,
-            "args": call.args,
-            "result": {"error": "unknown_tool", "message": f"No local implementation for {call.name}"},
-        }
-    try:
-        result = func(**call.args)
-    except Exception as exc:
-        result = {"error": type(exc).__name__, "message": str(exc)}
-    return {"tool": call.name, "args": call.args, "result": result}
 
 
 def tool_results_message(events: list[dict[str, Any]]) -> dict[str, str]:
@@ -112,7 +99,7 @@ def run_model_tool_loop(
         non_clarification_events: list[dict[str, Any]] = []
 
         for call in calls:
-            print(f"🔧 {call.name}({json.dumps(call.args, ensure_ascii=False, sort_keys=True)})")
+            logging.getLogger(__name__).debug("Executing tool %s", call.name)
             event = execute_tool_call(call)
             round_record["tool_results"].append(event)
             all_tool_events.append(event)

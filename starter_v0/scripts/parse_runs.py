@@ -34,6 +34,9 @@ def row_for(run: dict[str, Any], result_item: dict[str, Any]) -> dict[str, Any]:
         "passed": result.get("passed"),
         "routing_correct": result.get("routing_correct"),
         "args_correct": result.get("args_correct"),
+        "behavior_correct": result.get("behavior_correct"),
+        "tool_execution_succeeded": result.get("tool_execution_succeeded"),
+        "tool_execution_errors": json.dumps(result.get("tool_execution_errors", []), ensure_ascii=False),
         "failures": "; ".join(result.get("failures") or []),
     }
 
@@ -63,7 +66,8 @@ def main() -> None:
     fieldnames = [
         "run_id", "version", "artifact_version", "suite", "case_id", "is_multiturn",
         "case_failure_type", "observed_mismatch", "expected_tool", "actual_tool",
-        "passed", "routing_correct", "args_correct", "failures",
+        "passed", "routing_correct", "args_correct", "behavior_correct",
+        "tool_execution_succeeded", "tool_execution_errors", "failures",
     ]
 
     if args.output:

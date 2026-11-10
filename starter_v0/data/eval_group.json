@@ -41,8 +41,8 @@
       "phase": "B", "suite": "group",
       "query": "Dịch giúp mình câu 'I love artificial intelligence' sang tiếng Pháp",
       "failure_type": "out_of_scope",
-      "expect": {"no_tool": true, "behavior": "refuse_or_answer_directly"},
-      "metadata": {"skill": "out_of_scope_translation", "difficulty": "easy", "what_it_tests": "Yêu cầu dịch thuật ngoài phạm vi research → KHÔNG gọi tool nào, trả lời thẳng."}
+      "expect": {"no_tool": true, "behavior": "refuse"},
+      "metadata": {"skill": "out_of_scope_translation", "difficulty": "easy", "what_it_tests": "Yêu cầu dịch thuật ngoài phạm vi research → KHÔNG gọi tool nào và phải từ chối, không dịch."}
     },
     {
       "id": "G06_background_then_news_carryover",

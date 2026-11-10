@@ -11,13 +11,48 @@ from agent import ResearchAgent
 from env_loader import load_lab_env
 from providers import make_provider
 from tools import TOOL_FUNCTIONS, load_tool_declarations, to_openai_tools
-from versioning import artifact_version_dict, build_artifact_version
+from versioning import artifact_version_dict, build_artifact_version, file_hash
 
 
 ROOT = Path(__file__).parent
 ARTIFACTS_DIR = ROOT / "artifacts"
 DATA_DIR = ROOT / "data"
 load_lab_env(ROOT)
+
+# v5 uses a strict refusal template: reject paraphrases for manual review rather
+# than accept a refusal followed by a solution. This is not a semantic LLM judge.
+REFUSAL_TEXT = (
+    "Yêu cầu này nằm ngoài phạm vi của trợ lý nghiên cứu. "
+    "Mình có thể giúp tìm tin tức, tra cứu nguồn và tóm tắt tài liệu."
+)
+
+
+def evaluate_text_behavior(behavior: str | None, text: str | None) -> tuple[bool, list[str]]:
+    normalized = " ".join((text or "").split())
+    if behavior == "refuse":
+        ok = normalized == REFUSAL_TEXT
+        return ok, [] if ok else ["expected exact scope refusal only; solution/code/translation or other text is not accepted"]
+    if behavior == "answer_without_tool":
+        ok = bool(normalized) and normalized != REFUSAL_TEXT
+        return ok, [] if ok else ["expected a nonempty direct answer, not a scope refusal"]
+    return True, []
+
+
+def evaluate_tool_execution(tool_calls: list[dict[str, Any]], events: list[dict[str, Any]]) -> dict[str, Any]:
+    errors = []
+    for event in events:
+        result = event.get("result", {})
+        error = event.get("error") or (result.get("error") if isinstance(result, dict) else "invalid_tool_result")
+        if error:
+            errors.append({"tool": event.get("tool"), "error": error,
+                           "message": result.get("message") if isinstance(result, dict) else None})
+    if len(events) != len(tool_calls):
+        errors.append({"error": "missing_tool_results", "expected": len(tool_calls), "actual": len(events)})
+    return {
+        "tool_execution_attempted": bool(tool_calls),
+        "tool_execution_succeeded": not errors if tool_calls else None,
+        "tool_execution_errors": errors,
+    }
 
 ALLOWED_CASE_FAILURE_TYPES = {
     "wrong_tool",
@@ -143,17 +178,23 @@ def evaluate_phase_b(case: dict[str, Any], tool_calls: list[dict[str, Any]], tex
     expect = case["expect"]
     case_failure_type = case["failure_type"]
     if expect.get("no_tool"):
-        passed = not tool_calls
+        routing_correct = not tool_calls
+        behavior = "refuse" if case_failure_type == "out_of_scope" else expect.get("behavior")
+        behavior_correct, failures = evaluate_text_behavior(behavior, text)
+        if not routing_correct:
+            failures.insert(0, "expected no tool call")
+        passed = routing_correct and behavior_correct
         return {
             "passed": passed,
-            "routing_correct": passed,
-            "args_correct": passed,
+            "routing_correct": routing_correct,
+            "args_correct": routing_correct,
+            "behavior_correct": behavior_correct,
             "actual_tool_calls": tool_calls,
             "actual_text": text,
             "case_failure_type": case_failure_type,
-            "observed_mismatch": None if passed else "unexpected_tool_call",
+            "observed_mismatch": None if passed else ("unexpected_tool_call" if tool_calls else "wrong_response_content"),
             "failure_type": None if passed else case_failure_type,
-            "failures": [] if passed else ["expected no tool call"],
+            "failures": failures,
         }
 
     expected_calls = expect.get("tool_calls", [])
@@ -246,6 +287,19 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
             observed_mismatch_counts[observed_mismatch] = observed_mismatch_counts.get(observed_mismatch, 0) + 1
     summary["failure_counts"] = failure_counts
     summary["observed_mismatch_counts"] = observed_mismatch_counts
+    # Execution is reported separately from selection/arguments/content checks.
+    attempted = [item for item in measured if item["result"].get("tool_execution_attempted")]
+    if all("tool_execution_attempted" in item["result"] for item in measured):
+        execution_errors = sum(item["result"]["tool_execution_succeeded"] is False for item in attempted)
+        summary.update({
+            "tool_execution_attempted_cases": len(attempted),
+            "tool_execution_success_cases": len(attempted) - execution_errors,
+            "tool_execution_error_cases": execution_errors,
+            "no_tool_cases": len(measured) - len(attempted),
+        })
+    behavior_cases = [item for item in measured if "behavior_correct" in item["result"]]
+    summary["response_behavior_cases"] = len(behavior_cases)
+    summary["response_behavior_passed"] = sum(item["result"]["behavior_correct"] for item in behavior_cases)
     return summary
 
 
@@ -295,6 +349,7 @@ def main() -> None:
             calls = [{"name": call.name, "args": call.args} for call in run.tool_calls]
             result = evaluate_phase_b(case, calls, run.text)
             tool_results = run.tool_results
+            result.update(evaluate_tool_execution(calls, tool_results))
         except Exception as exc:
             calls = []
             tool_results = []
@@ -347,6 +402,9 @@ def main() -> None:
         "eval_cases": str(args.eval_cases),
         **dataset_info,
         "generated_at": generated_at,
+        "evaluator_hash": file_hash(Path(__file__)),
+        "runtime_hash": file_hash(ROOT / "tool_execution.py"),
+        "evaluation_scope": "tool selection/arguments + strict no_tool response contract; execution reported separately; not end-to-end answer quality",
         "summary": summary,
         "results": results,
     }

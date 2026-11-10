@@ -10,4 +10,8 @@ side_effect: true
 ---
 # send
 
-Posts text to a Telegram channel. The message is only sent when `confirmed` is true.
+Low-level Telegram transport, retained for offline unit tests. `confirmed` is a
+caller-provided argument, not evidence of user approval. Model-driven execution
+is disabled by `tool_execution.py` in eval, CLI chat and the public UI. The public
+UI also removes `send` from model tool declarations. No Telegram bonus is claimed
+until an exact-draft approval flow and a real delivery receipt are demonstrated.

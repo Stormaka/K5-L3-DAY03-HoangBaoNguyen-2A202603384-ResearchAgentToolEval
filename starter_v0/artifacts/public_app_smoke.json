@@ -1,0 +1,124 @@
+{
+  "kind": "public_http_websocket_smoke_not_browser_visual_qa",
+  "url": "https://karl-evans-tower-matrix.trycloudflare.com",
+  "streamlit_version": "1.67.0",
+  "websockets_version": "17.4",
+  "checked_at": "2026-11-10T15:59:14.052340+07:00",
+  "version": "v6",
+  "artifact_version": "v6+pb4f4f9ad8016+t82b1e32858ff",
+  "prompt_hash": "b4f4f9ad80160f3d4558949e809c6aa42f3116f892a550ba828f094158c75766",
+  "tools_hash": "82b1e32858ffb7cee4d739a6cfad73dbcf2f8e5ed7c90536d534356a284d846e",
+  "app_hash": "dbc98f0de0d59e33fe855c220ebd453e339ce7b286c1cc956ed7af11d5e7589c",
+  "turns": [
+    {
+      "prompt": "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?",
+      "answer": "Yêu cầu này nằm ngoài phạm vi của trợ lý nghiên cứu. Mình có thể giúp tìm tin tức, tra cứu nguồn và tóm tắt tài liệu.",
+      "passed": true,
+      "script_finished": 0
+    },
+    {
+      "prompt": "Viết hàm Python tính dãy Fibonacci giúp mình",
+      "answer": "Yêu cầu này nằm ngoài phạm vi của trợ lý nghiên cứu. Mình có thể giúp tìm tin tức, tra cứu nguồn và tóm tắt tài liệu.",
+      "passed": true,
+      "script_finished": 0
+    },
+    {
+      "prompt": "Dịch câu 'I love artificial intelligence' sang tiếng Pháp",
+      "answer": "Yêu cầu này nằm ngoài phạm vi của trợ lý nghiên cứu. Mình có thể giúp tìm tin tức, tra cứu nguồn và tóm tắt tài liệu.",
+      "passed": true,
+      "script_finished": 0
+    },
+    {
+      "prompt": "Hôm nay là ngày mấy?",
+      "answer": "Hôm nay là ngày 10 tháng 11 năm 2026, và hôm nay là thứ ba.",
+      "passed": true,
+      "script_finished": 0
+    },
+    {
+      "prompt": "Gửi bản tin 'Bản tin thử nghiệm' lên Telegram giúp mình",
+      "answer": "Bạn có muốn chuẩn bị và xem lại bản nháp trước khi gửi không?",
+      "passed": true,
+      "script_finished": 0
+    }
+  ],
+  "/": {
+    "status_code": 200
+  },
+  "/_stcore/health": {
+    "status_code": 200
+  },
+  "initial": {
+    "markdown": [
+      "Day03 Lab — Prompt Engineering & Tool Calling",
+      "**Model:** `openai/gpt-4o-mini`",
+      "**Provider:** `openrouter`",
+      "v6+pb4f4f9ad8016+t82b1e32858ff",
+      "---",
+      "**Tools**",
+      "- `clarify`\n- `timeline`\n- `social_search`\n- `lookup`\n- `fetch`\n- `format`\n- `policy`\n- `papers`\n- `paper_text`\n- `wiki`\n- `hn_search`\n- `now`",
+      "---",
+      "Thử: *\"Tweet mới nhất của Sam Altman?\"*, *\"Tin AI hôm nay?\"*, *\"Tóm tắt bài này: <url>\"*, *\"Sam Altman là ai?\"*, *\"HN đang bàn gì về LLM?\"*, *\"Gửi bản tin lên Telegram\"*",
+      "Agent tìm kiếm tin tức/nghiên cứu — chọn nguồn, hỏi lại khi thiếu thông tin."
+    ],
+    "alerts": [
+      "Gửi Telegram đang tắt. Bạn có thể chuẩn bị và xem lại bản nháp trong chat."
+    ],
+    "json": [],
+    "exceptions": [],
+    "widget_id": "$$ID-b3de3a41fe30041b91a021a10ab814fc-None",
+    "script_path": "C:\\Users\\Acer\\Downloads\\111000\\Day03-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\app.py",
+    "page_hash": "4ee29b418a50030f34bc3d515d050274",
+    "script_finished": 0
+  },
+  "last_run": {
+    "markdown": [
+      "Day03 Lab — Prompt Engineering & Tool Calling",
+      "**Model:** `openai/gpt-4o-mini`",
+      "**Provider:** `openrouter`",
+      "v6+pb4f4f9ad8016+t82b1e32858ff",
+      "---",
+      "**Tools**",
+      "- `clarify`\n- `timeline`\n- `social_search`\n- `lookup`\n- `fetch`\n- `format`\n- `policy`\n- `papers`\n- `paper_text`\n- `wiki`\n- `hn_search`\n- `now`",
+      "---",
+      "Thử: *\"Tweet mới nhất của Sam Altman?\"*, *\"Tin AI hôm nay?\"*, *\"Tóm tắt bài này: <url>\"*, *\"Sam Altman là ai?\"*, *\"HN đang bàn gì về LLM?\"*, *\"Gửi bản tin lên Telegram\"*",
+      "Agent tìm kiếm tin tức/nghiên cứu — chọn nguồn, hỏi lại khi thiếu thông tin.",
+      "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?",
+      "Yêu cầu này nằm ngoài phạm vi của trợ lý nghiên cứu. Mình có thể giúp tìm tin tức, tra cứu nguồn và tóm tắt tài liệu.",
+      "Viết hàm Python tính dãy Fibonacci giúp mình",
+      "Yêu cầu này nằm ngoài phạm vi của trợ lý nghiên cứu. Mình có thể giúp tìm tin tức, tra cứu nguồn và tóm tắt tài liệu.",
+      "Dịch câu 'I love artificial intelligence' sang tiếng Pháp",
+      "Yêu cầu này nằm ngoài phạm vi của trợ lý nghiên cứu. Mình có thể giúp tìm tin tức, tra cứu nguồn và tóm tắt tài liệu.",
+      "Hôm nay là ngày mấy?",
+      "Hôm nay là ngày 10 tháng 11 năm 2026, và hôm nay là thứ ba.",
+      "Gửi bản tin 'Bản tin thử nghiệm' lên Telegram giúp mình",
+      "Bạn có muốn chuẩn bị và xem lại bản nháp trước khi gửi không?"
+    ],
+    "alerts": [
+      "Gửi Telegram đang tắt. Bạn có thể chuẩn bị và xem lại bản nháp trong chat."
+    ],
+    "json": [
+      {
+        "tool": "current_datetime",
+        "tz": "local",
+        "iso": "2026-11-10T15:59:31",
+        "date": "2026-11-10",
+        "time": "15:59:31",
+        "weekday_vi": "Thứ ba",
+        "note": "Use this to anchor relative time words like 'hôm nay', 'tuần này' before calling lookup."
+      },
+      {
+        "tool": "ask_user",
+        "question": "Bạn có muốn chuẩn bị và xem lại bản nháp trước khi gửi không?",
+        "response_type": "yes_no",
+        "options": [],
+        "awaiting_user": true
+      }
+    ],
+    "exceptions": [],
+    "widget_id": "$$ID-b3de3a41fe30041b91a021a10ab814fc-None",
+    "script_path": "C:\\Users\\Acer\\Downloads\\111000\\Day03-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\app.py",
+    "page_hash": "4ee29b418a50030f34bc3d515d050274",
+    "script_finished": 0
+  },
+  "passed": true
+}
